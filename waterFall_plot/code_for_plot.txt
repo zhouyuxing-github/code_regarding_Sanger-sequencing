@@ -1,0 +1,67 @@
+###############################  sliding window  #################################
+library(eoffice)
+library(zoo)
+
+# compare amino variance:
+setwd("D:\\work_syn\\work_syn\\papers")
+# use comma to seperate each amino of your sequences, save as "xxx.txt"...
+for i in `ls *txt`
+do
+{
+  echo "sed 's/A/A,/g' $i |sed 's/?/?,/g'|sed 's/-/-,/g'|sed 's/C/C,/g' |sed 's/D/D,/g' |sed 's/E/E,/g' |sed 's/F/F,/g' |sed 's/G/G,/g' |sed 's/H/H,/g' |sed 's/I/I,/g' |sed 's/K/K,/g' |sed 's/L/L,/g' |sed 's/M/M,/g' |sed 's/N/N,/g' |sed 's/P/P,/g' |sed 's/Q/Q,/g' |sed 's/R/R,/g' |sed 's/S/S,/g' |sed 's/T/T,/g' |sed 's/V/V,/g' |sed 's/W/W,/g' |sed 's/Y/Y,/g' |sed 's/*/*,/g'> ${i%.*}_1.txt"
+}
+done
+
+for i in `ls *_1.txt`
+do
+{
+  echo "mv $i ${i%.*}.csv"
+}
+done
+#then Transpose these sequnces and paste to a csv file
+#read this csv：
+data<-read.csv("D:\\work_syn\\work_syn\\papers\merged.csv",header = T);head(data)
+
+EU236594<-ifelse(data$mySeq==data$EU236594,0,1);head(EU236594)
+KP236130<-ifelse(data$mySeq==data$KP236130,0,1);head(KP236130)
+KP264975<-ifelse(data$mySeq==data$KP264975,0,1);head(KP264975)
+KP264980<-ifelse(data$mySeq==data$KP264980,0,1);head(KP264980)
+KU159361<-ifelse(data$mySeq==data$KU159361,0,1);head(KU159361)
+KU168861<-ifelse(data$mySeq==data$KU168861,0,1);head(KU168861)
+KU168862<-ifelse(data$mySeq==data$KU168862,0,1);head(KU168862)
+KU195360<-ifelse(data$mySeq==data$KU195360,0,1);head(KU195360)
+KY432299<-ifelse(data$mySeq==data$KY432299,0,1);head(KY432299)
+MT160419<-ifelse(data$mySeq==data$MT160419,0,1);head(MT160419)
+NC010354<-ifelse(data$mySeq==data$NC010354,0,1);head(NC010354)
+
+merged<-data.frame(EU236594,KP236130,KP264975,KP264980,KU159361,KU168861,
+                   KU168862,KU195360,KY432299,MT160419,NC010354);head(merged)
+write.csv(merged,file = "merged_diff.csv")
+width=30 #50
+step=1   #5
+c1<-rollapply(EU236594,FUN=sum,width=width,by=step); #width: window size; by: step by
+c2<-rollapply(KP236130,FUN=sum,width=width,by=step) 
+c3<-rollapply(KP264975,FUN=sum,width=width,by=step) 
+c4<-rollapply(KP264980,FUN=sum,width=width,by=step) 
+c5<-rollapply(KU159361,FUN=sum,width=width,by=step) 
+c6<-rollapply(KU168861,FUN=sum,width=width,by=step) 
+c7<-rollapply(KU168862,FUN=sum,width=width,by=step) 
+c8<-rollapply(KU195360,FUN=sum,width=width,by=step) 
+c9<-rollapply(KY432299,FUN=sum,width=width,by=step) 
+c10<-rollapply(MT160419,FUN=sum,width=width,by=step) 
+c11<-rollapply(NC010354,FUN=sum,width=width,by=step) 
+
+par(mfrow=c(11,1),mar=c(0,2,0,0))
+plot(x=c(1:length(c1)),y=c1,type="o",cex=0,lwd=1.5,col="#972A2B",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+plot(x=c(1:length(c2)),y=c2,type="o",cex=0,lwd=1.5,col="#3772C7",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+plot(x=c(1:length(c3)),y=c3,type="o",cex=0,lwd=1.5,col="#E24419",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+plot(x=c(1:length(c4)),y=c4,type="o",cex=0,lwd=1.5,col="#538135",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+plot(x=c(1:length(c5)),y=c5,type="o",cex=0,lwd=1.5,col="#3375B4",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+plot(x=c(1:length(c6)),y=c6,type="o",cex=0,lwd=1.5,col="#685D4C",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+plot(x=c(1:length(c7)),y=c7,type="o",cex=0,lwd=1.5,col="#FE9C43",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+plot(x=c(1:length(c8)),y=c8,type="o",cex=0,lwd=1.5,col="#FE5C5C",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+plot(x=c(1:length(c9)),y=c9,type="o",cex=0,lwd=1.5,col="#748A54",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+plot(x=c(1:length(c10)),y=c10,type="o",cex=0,lwd=1.5,col="#7C5674",ylab="",ylim = c(0,17),xlab="")
+plot(x=c(1:length(c11)),y=c11,type="o",cex=0,lwd=1.5,col="#0D0DBB",ylab="",ylim = c(0,17),xlab="",xaxt="n")
+
+topptx(filename = choose.files())
